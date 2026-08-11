@@ -1,7 +1,13 @@
 name: bronze-ingest
 
 # Mirrors "GitHub Actions Workflow 1 (JSON Ingestion -> Bronze)" from the
-# architecture diagram. Runs on a schedule and on manual dispatch.
+# architecture diagram. Manual dispatch only.
+#
+# The hourly schedule is disabled: while the pipeline is still in development
+# this fired against the live Neon database ~400 times and appended an
+# ingestion_log row on every run. Re-enable the `schedule` block below once the
+# workflow actually fetches fresh JSON from the NatGasHub API instead of
+# re-ingesting a checked-in sample file.
 on:
   workflow_dispatch:
     inputs:
@@ -9,8 +15,8 @@ on:
         description: "Path to the NatGasHub JSON file to ingest"
         required: true
         default: "data/sample_natgashub_contract.json"
-  schedule:
-    - cron: "0 * * * *"   # hourly; adjust to your posting cadence
+  # schedule:
+  #   - cron: "0 * * * *"   # hourly; adjust to your posting cadence
 
 jobs:
   ingest:

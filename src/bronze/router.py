@@ -30,7 +30,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from . import validators
+from . import coerce, validators
 
 
 @dataclass
@@ -130,9 +130,8 @@ def route(payload: Dict[str, Any], feed_type: str) -> Iterator[RoutedRecord]:
     spec = FEED_REGISTRY[feed_type]
 
     header = {k: payload[k] for k in spec.header_keys if k in payload}
-    records = payload.get(spec.records_key) or []
-    if not isinstance(records, list):
-        records = [records]
+    # Record lists and child arrays may arrive native or as embedded JSON text.
+    records = coerce.as_record_list(payload.get(spec.records_key))
 
     for raw in records:
         record = dict(raw)
@@ -150,7 +149,7 @@ def route(payload: Dict[str, Any], feed_type: str) -> Iterator[RoutedRecord]:
         )
 
         for child in spec.children:
-            for child_raw in (record.get(child.array_key) or []):
+            for child_raw in coerce.as_record_list(record.get(child.array_key)):
                 child_record = dict(child_raw)
                 _merge_missing(child_record, record, child.inherit)
                 yield RoutedRecord(

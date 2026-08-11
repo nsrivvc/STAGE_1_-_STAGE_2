@@ -29,16 +29,27 @@ import json
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from . import schemas
+from . import coerce, schemas
 
 
 def _scalarize(value: Any) -> Any:
-    """Coerce a JSON value into something a TEXT column can hold."""
+    """Coerce a JSON value into something a TEXT column can hold.
+
+    Structure destined for a scalar column (e.g. KStatDesc arriving as
+    {"code":"A","desc":"Active"}) is kept as JSON text so Silver can still parse
+    it. The text is *canonical* (sorted keys, no whitespace) whether the source
+    sent a native object or an embedded JSON string, so the same logical content
+    yields the same hash_key either way and re-ingestion stays idempotent.
+    """
     if value is None:
         return None
+    if isinstance(value, str):
+        parsed = coerce.parse_embedded_json(value)
+        # Only rewrite when the string really was structure; plain text, numeric
+        # strings and malformed JSON pass through verbatim.
+        return coerce.dumps(parsed) if isinstance(parsed, (dict, list)) else value
     if isinstance(value, (dict, list)):
-        # Unexpected nested structure for a scalar column -> keep as JSON text.
-        return json.dumps(value, separators=(",", ":"), default=str)
+        return coerce.dumps(value)
     if isinstance(value, bool):
         return "true" if value else "false"
     return str(value)
