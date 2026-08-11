@@ -28,6 +28,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
+from . import parquet_export
 from .bronze import router, schemas, transformers, validators
 from .config import RunContext, Settings
 from .db.connection import get_writer
@@ -46,7 +47,14 @@ def resolve_source_api(payload: Dict[str, Any], feed_type: str) -> str:
     )
 
 
-def run(file_path: str, settings: Settings, *, create_tables: bool, dry_run: bool) -> int:
+def run(
+    file_path: str,
+    settings: Settings,
+    *,
+    create_tables: bool,
+    dry_run: bool,
+    parquet_dir: str | None = None,
+) -> int:
     payload = load_payload(file_path)
 
     feed_type = validators.validate_payload(payload, router.known_feeds())
@@ -81,6 +89,13 @@ def run(file_path: str, settings: Settings, *, create_tables: bool, dry_run: boo
         rows_by_table[routed.table].append(row)
 
     objects_read = sum(len(v) for v in rows_by_table.values())
+
+    # ---- parquet export (before any database write) -----------------------
+    if parquet_dir:
+        for path in parquet_export.export_tables(
+            rows_by_table, ctx, feed_type, parquet_dir
+        ):
+            print(f"  parquet: {path}")
 
     # ---- write ------------------------------------------------------------
     status = "Succeeded"
@@ -163,6 +178,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
                    help="Run the Bronze DDL (CREATE IF NOT EXISTS) before loading")
     p.add_argument("--dry-run", action="store_true",
                    help="Parse/validate/route/transform without touching a database")
+    p.add_argument("--parquet-dir", default=None,
+                   help="Directory for the pre-load Parquet export "
+                        "(default: PARQUET_OUTPUT_DIR or 'parquet_output')")
+    p.add_argument("--no-parquet", action="store_true",
+                   help="Skip the Parquet export entirely")
     return p
 
 
@@ -175,6 +195,8 @@ def main(argv: List[str] | None = None) -> int:
             settings,
             create_tables=args.create_tables,
             dry_run=args.dry_run,
+            parquet_dir=None if args.no_parquet
+            else (args.parquet_dir or settings.parquet_output_dir),
         )
     except FileNotFoundError:
         print(f"ERROR: input file not found: {args.file}", file=sys.stderr)

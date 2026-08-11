@@ -52,6 +52,10 @@ class Settings:
     batch_size: int = field(
         default_factory=lambda: int(os.getenv("BATCH_SIZE", "500"))
     )
+    # Directory for the pre-load Parquet export (see src/parquet_export.py).
+    parquet_output_dir: str = field(
+        default_factory=lambda: os.getenv("PARQUET_OUTPUT_DIR", "parquet_output")
+    )
 
     def require_db(self) -> None:
         """Validate that the credentials for the chosen db_type are present."""

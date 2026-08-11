@@ -14,7 +14,7 @@ on:
       file:
         description: "Path to the NatGasHub JSON file to ingest"
         required: true
-        default: "data/sample_natgashub_contract.json"
+        default: "data/firms_test.json"
   # schedule:
   #   - cron: "0 * * * *"   # hourly; adjust to your posting cadence
 
@@ -42,5 +42,16 @@ jobs:
           TRIGGERED_BY: github-actions
         run: |
           python -m src.main \
-            --file "${{ github.event.inputs.file || 'data/sample_natgashub_contract.json' }}" \
+            --file "${{ github.event.inputs.file || 'data/firms_test.json' }}" \
             --create-tables
+
+      # The ingestion step also exports each Bronze table to Parquet (under
+      # parquet_output/) before loading the database. Publish those files as a
+      # build artifact so they can be downloaded or handed to a later stage.
+      - name: Upload Parquet export
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bronze-parquet-${{ github.run_id }}
+          path: parquet_output/
+          if-no-files-found: warn
