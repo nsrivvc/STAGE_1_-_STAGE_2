@@ -63,3 +63,30 @@ jobs:
           name: bronze-parquet-firm-${{ github.run_id }}
           path: parquet_output/
           if-no-files-found: warn
+
+      # Hands off to the Silver pipeline in nsrivvc/bronze_to_silver_conversion,
+      # which listens for repository_dispatch type `bronze-firm-loaded`.
+      #
+      # `workflow_run` cannot be used across repositories, and the default
+      # GITHUB_TOKEN is scoped to THIS repo, so this needs a separate token with
+      # `contents: write` on the Silver repo, stored here as SILVER_REPO_TOKEN.
+      #
+      # `if: success()` matters: a failed load must not start Silver over bad data.
+      #
+      # run_final=false because the FINAL master capacity tables consolidate all
+      # five feeds -- a firm ingest says nothing about the freshness of the rest.
+      # Rebuild those separately once every feed has landed.
+      - name: Trigger Silver firm pipeline
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.SILVER_REPO_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::SILVER_REPO_TOKEN not set - Silver pipeline not triggered."
+            exit 0
+          fi
+          gh api repos/nsrivvc/bronze_to_silver_conversion/dispatches \
+            -f event_type=bronze-firm-loaded \
+            -f 'client_payload[ingest_run_id]=${{ github.run_id }}' \
+            -F 'client_payload[run_final]=false'
+          echo "Dispatched bronze-firm-loaded to the Silver repo."
