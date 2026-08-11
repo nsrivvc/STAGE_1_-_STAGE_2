@@ -3,3 +3,4 @@
 __pycache__/
 *.pyc
 parquet_output/
+data/_fetched_*.json

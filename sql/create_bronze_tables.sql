@@ -1,10 +1,10 @@
--- Auto-generated from src/bronze/schemas.py — do not hand-edit.
+﻿-- Auto-generated from src/bronze/schemas.py — do not hand-edit.
 -- Regenerate with:  python -m src.bronze.schemas
 
 CREATE SCHEMA IF NOT EXISTS bronze;
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_firm" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "id"                         TEXT,            -- source type: varchar
     "tspname"                    TEXT,            -- source type: varchar
     "tspduns"                    TEXT,            -- source type: int
@@ -64,7 +64,7 @@ CREATE INDEX IF NOT EXISTS "ix_gtran_firm_run" ON bronze."gtran_firm" (pipeline_
 CREATE INDEX IF NOT EXISTS "ix_gtran_firm_recid" ON bronze."gtran_firm" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_it" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "id"                         TEXT,            -- source type: varchar
     "tspname"                    TEXT,            -- source type: varchar
     "tspduns"                    TEXT,            -- source type: int
@@ -118,7 +118,7 @@ CREATE INDEX IF NOT EXISTS "ix_gtran_it_run" ON bronze."gtran_it" (pipeline_run_
 CREATE INDEX IF NOT EXISTS "ix_gtran_it_recid" ON bronze."gtran_it" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gindex" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "id"                         TEXT,            -- source type: int
     "fercid"                     TEXT,            -- source type: varchar
     "pipe"                       TEXT,            -- source type: varchar
@@ -168,7 +168,7 @@ CREATE INDEX IF NOT EXISTS "ix_gindex_run" ON bronze."gindex" (pipeline_run_id);
 CREATE INDEX IF NOT EXISTS "ix_gindex_recid" ON bronze."gindex" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_loc" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "index"                      TEXT,            -- source type: varchar
     "segment"                    TEXT,            -- source type: varchar
     "firmid"                     TEXT,            -- source type: varchar
@@ -209,7 +209,7 @@ CREATE INDEX IF NOT EXISTS "ix_gtran_loc_run" ON bronze."gtran_loc" (pipeline_ru
 CREATE INDEX IF NOT EXISTS "ix_gtran_loc_recid" ON bronze."gtran_loc" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_it_loc" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "index"                      TEXT,            -- source type: varchar
     "segment"                    TEXT,            -- source type: varchar
     "interruptibleid"            TEXT,            -- source type: varchar
@@ -250,7 +250,7 @@ CREATE INDEX IF NOT EXISTS "ix_gtran_it_loc_run" ON bronze."gtran_it_loc" (pipel
 CREATE INDEX IF NOT EXISTS "ix_gtran_it_loc_recid" ON bronze."gtran_it_loc" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_rates" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "seasnlst"                   TEXT,            -- source type: varchar
     "seasnlend"                  TEXT,            -- source type: varchar
     "firmid"                     TEXT,            -- source type: varchar
@@ -324,8 +324,54 @@ CREATE TABLE IF NOT EXISTS bronze."gtran_rates" (
 CREATE INDEX IF NOT EXISTS "ix_gtran_rates_run" ON bronze."gtran_rates" (pipeline_run_id);
 CREATE INDEX IF NOT EXISTS "ix_gtran_rates_recid" ON bronze."gtran_rates" (raw_record_id);
 
+CREATE TABLE IF NOT EXISTS bronze."gawd" (
+    bronze_row_id BIGSERIAL PRIMARY KEY,
+    "id"                         TEXT,            -- source type: varchar
+    "tspname"                    TEXT,            -- source type: varchar
+    "tspduns"                    TEXT,            -- source type: int
+    "tspprop"                    TEXT,            -- source type: varchar
+    "posteddatetime"             TEXT,            -- source type: datetime
+    "awardid"                    TEXT,            -- source type: varchar
+    "cycle"                      TEXT,            -- source type: varchar
+    "relkholdername"             TEXT,            -- source type: varchar
+    "relkholder"                 TEXT,            -- source type: int
+    "relk"                       TEXT,            -- source type: varchar
+    "acqkholdername"             TEXT,            -- source type: varchar
+    "acqkholder"                 TEXT,            -- source type: int
+    "acqk"                       TEXT,            -- source type: varchar
+    "ratesch"                    TEXT,            -- source type: varchar
+    "captype"                    TEXT,            -- source type: varchar
+    "captypename"                TEXT,            -- source type: varchar
+    "awdqty"                     TEXT,            -- source type: int
+    "awdbegdatetime"             TEXT,            -- source type: datetime
+    "awdenddatetime"             TEXT,            -- source type: datetime
+    "reclocs"                    TEXT,            -- source type: varchar
+    "dellocs"                    TEXT,            -- source type: varchar
+    "ngtdrateind"                TEXT,            -- source type: varchar
+    "prearrngdeal"               TEXT,            -- source type: varchar
+    "ratechgd"                   TEXT,            -- source type: varchar
+    "maxtrfrate"                 TEXT,            -- source type: varchar
+    "ratebasis"                  TEXT,            -- source type: varchar
+    "termsnotes"                 TEXT,            -- source type: varchar
+    "createddatetime"            TEXT,            -- source type: datetime
+    -- ---- pipeline metadata ----
+    "raw_record_id"              VARCHAR(256),
+    "hash_key"                   VARCHAR(64),
+    "pipeline_run_id"            VARCHAR(64),
+    "source_system"              VARCHAR(128),
+    "source_api"                 VARCHAR(256),
+    "source_file_name"           VARCHAR(512),
+    "ingestion_timestamp"        TIMESTAMPTZ,
+    "updated_ts"                 TIMESTAMPTZ,
+    "ingestion_status"           VARCHAR(32),
+    "raw_payload"                JSONB,
+    CONSTRAINT "uq_gawd_hash" UNIQUE (hash_key)
+);
+CREATE INDEX IF NOT EXISTS "ix_gawd_run" ON bronze."gawd" (pipeline_run_id);
+CREATE INDEX IF NOT EXISTS "ix_gawd_recid" ON bronze."gawd" (raw_record_id);
+
 CREATE TABLE IF NOT EXISTS bronze."gtran_it_rates" (
-    id BIGSERIAL PRIMARY KEY,
+    bronze_row_id BIGSERIAL PRIMARY KEY,
     "maxdq"                      TEXT,            -- source type: varchar
     "mindq"                      TEXT,            -- source type: varchar
     "seasnlst"                   TEXT,            -- source type: varchar

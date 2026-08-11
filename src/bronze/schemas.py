@@ -133,6 +133,23 @@ BUSINESS_COLUMNS: Dict[str, List[tuple]] = {
         ("RptLvl", "varchar"), ("RptLvlDesc", "varchar"), ("TspDuns", "int"),
         ("TspName", "varchar"), ("NgtdRateIndRates", "varchar"),
     ],
+    # Capacity-release awards feed. NOT in the source spreadsheet — this is a
+    # starting column set modeled on NAESB award postings; extend it when the
+    # official schema sheet adds an Awards tab.
+    "gawd": [
+        ("Id", "varchar"), ("TspName", "varchar"), ("TspDuns", "int"),
+        ("TspProp", "varchar"), ("PostedDateTime", "datetime"),
+        ("AwardId", "varchar"), ("Cycle", "varchar"),
+        ("RelKHolderName", "varchar"), ("RelKHolder", "int"), ("RelK", "varchar"),
+        ("AcqKHolderName", "varchar"), ("AcqKHolder", "int"), ("AcqK", "varchar"),
+        ("RateSch", "varchar"), ("CapType", "varchar"), ("CapTypeName", "varchar"),
+        ("AwdQty", "int"), ("AwdBegDateTime", "datetime"),
+        ("AwdEndDateTime", "datetime"), ("RecLocs", "varchar"),
+        ("DelLocs", "varchar"), ("NgtdRateInd", "varchar"),
+        ("PrearrngDeal", "varchar"), ("RateChgd", "varchar"),
+        ("MaxTrfRate", "varchar"), ("RateBasis", "varchar"),
+        ("TermsNotes", "varchar"), ("CreatedDateTime", "datetime"),
+    ],
     "gtran_it_rates": [
         ("MaxDq", "varchar"), ("MinDq", "varchar"), ("SeasnlSt", "varchar"),
         ("SeasnlEnd", "varchar"), ("InterruptibleId", "varchar"), ("UniqueId", "varchar"),
