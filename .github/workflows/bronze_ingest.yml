@@ -14,10 +14,10 @@ name: bronze-ingest
 # The Bronze DDL is applied once, before the fan-out, so the four parallel
 # ingests never race each other creating tables — their own --create-tables
 # steps then find everything already present and no-op.
+# Manual runs only ("Run workflow" in the Actions tab) — no schedule, so this
+# never fires on its own.
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "0 * * * *"   # hourly; adjust to the posting cadence
 
 jobs:
   ensure-schema:
