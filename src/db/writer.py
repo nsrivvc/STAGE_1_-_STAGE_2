@@ -99,11 +99,14 @@ class PostgresBronzeWriter(BronzeWriter):
             [self._adapt(c, row.get(c)) for c in columns] for row in rows
         ]
 
-        inserted = 0
+        # executemany pipelines the whole batch to the server in a few network
+        # round trips instead of one per row — the difference between minutes
+        # and seconds when the database is remote (e.g. Neon from a CI runner).
+        # rowcount after executemany is the cumulative number of rows actually
+        # inserted (conflict-skipped duplicates are not counted).
         with self._conn.cursor() as cur:
-            for p in params:
-                cur.execute(stmt, p)
-                inserted += cur.rowcount  # 1 if inserted, 0 if conflict skipped
+            cur.executemany(stmt, params)
+            inserted = max(cur.rowcount, 0)
         self._conn.commit()
         return inserted
 

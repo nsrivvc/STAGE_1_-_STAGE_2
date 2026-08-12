@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS bronze."gtran_firm" (
     "otherrates"                 TEXT,            -- source type: varchar
     "otherratesdescription"      TEXT,            -- source type: varchar
     "otherratesbasis"            TEXT,            -- source type: varchar
+    "locations"                  TEXT,            -- source type: json
+    "rates"                      TEXT,            -- source type: json
     -- ---- pipeline metadata ----
     "raw_record_id"              VARCHAR(256),
     "hash_key"                   VARCHAR(64),
@@ -101,6 +103,8 @@ CREATE TABLE IF NOT EXISTS bronze."gtran_it" (
     "otherratesdescription"      TEXT,            -- source type: varchar
     "otherratesbasis"            TEXT,            -- source type: varchar
     "dealtype"                   TEXT,            -- source type: varchar
+    "locations"                  TEXT,            -- source type: json
+    "rates"                      TEXT,            -- source type: json
     -- ---- pipeline metadata ----
     "raw_record_id"              VARCHAR(256),
     "hash_key"                   VARCHAR(64),
@@ -166,163 +170,6 @@ CREATE TABLE IF NOT EXISTS bronze."gindex" (
 );
 CREATE INDEX IF NOT EXISTS "ix_gindex_run" ON bronze."gindex" (pipeline_run_id);
 CREATE INDEX IF NOT EXISTS "ix_gindex_recid" ON bronze."gindex" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gtran_loc" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "index"                      TEXT,            -- source type: varchar
-    "segment"                    TEXT,            -- source type: varchar
-    "firmid"                     TEXT,            -- source type: varchar
-    "uniqueid"                   TEXT,            -- source type: varchar
-    "pk"                         TEXT,            -- source type: varchar
-    "kqtyloc"                    TEXT,            -- source type: varchar
-    "seasnlst"                   TEXT,            -- source type: varchar
-    "seasnlend"                  TEXT,            -- source type: varchar
-    "uniquekey"                  TEXT,            -- source type: varchar
-    "id"                         TEXT,            -- source type: varchar
-    "posteddatetime"             TEXT,            -- source type: datetime
-    "kentbegdatetime"            TEXT,            -- source type: datetime
-    "kentenddatetime"            TEXT,            -- source type: datetime
-    "loc"                        TEXT,            -- source type: varchar
-    "locname"                    TEXT,            -- source type: varchar
-    "locpurp"                    TEXT,            -- source type: varchar
-    "locpurpdesc"                TEXT,            -- source type: varchar
-    "loczn"                      TEXT,            -- source type: varchar
-    "locqti"                     TEXT,            -- source type: varchar
-    "locqtidesc"                 TEXT,            -- source type: varchar
-    "tspduns"                    TEXT,            -- source type: int
-    "tspname"                    TEXT,            -- source type: varchar
-    "createddatetime"            TEXT,            -- source type: datetime
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gtran_loc_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gtran_loc_run" ON bronze."gtran_loc" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gtran_loc_recid" ON bronze."gtran_loc" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gtran_it_loc" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "index"                      TEXT,            -- source type: varchar
-    "segment"                    TEXT,            -- source type: varchar
-    "interruptibleid"            TEXT,            -- source type: varchar
-    "uniqueid"                   TEXT,            -- source type: varchar
-    "pk"                         TEXT,            -- source type: varchar
-    "itqtyloc"                   TEXT,            -- source type: varchar
-    "seasnlst"                   TEXT,            -- source type: varchar
-    "seasnlend"                  TEXT,            -- source type: varchar
-    "uniquekey"                  TEXT,            -- source type: varchar
-    "id"                         TEXT,            -- source type: varchar
-    "posteddatetime"             TEXT,            -- source type: datetime
-    "kentbegdatetime"            TEXT,            -- source type: datetime
-    "kentenddatetime"            TEXT,            -- source type: datetime
-    "loc"                        TEXT,            -- source type: varchar
-    "locname"                    TEXT,            -- source type: varchar
-    "locpurp"                    TEXT,            -- source type: varchar
-    "locpurpdesc"                TEXT,            -- source type: varchar
-    "loczn"                      TEXT,            -- source type: varchar
-    "locqti"                     TEXT,            -- source type: varchar
-    "locqtidesc"                 TEXT,            -- source type: varchar
-    "tspduns"                    TEXT,            -- source type: int
-    "tspname"                    TEXT,            -- source type: varchar
-    "createddatetime"            TEXT,            -- source type: datetime
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gtran_it_loc_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gtran_it_loc_run" ON bronze."gtran_it_loc" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gtran_it_loc_recid" ON bronze."gtran_it_loc" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gtran_rates" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "seasnlst"                   TEXT,            -- source type: varchar
-    "seasnlend"                  TEXT,            -- source type: varchar
-    "firmid"                     TEXT,            -- source type: varchar
-    "uniqueid"                   TEXT,            -- source type: varchar
-    "pk"                         TEXT,            -- source type: varchar
-    "rateformtype"               TEXT,            -- source type: varchar
-    "rateformtypedesc"           TEXT,            -- source type: varchar
-    "resratebasis"               TEXT,            -- source type: varchar
-    "resratebasisdesc"           TEXT,            -- source type: varchar
-    "lockmaxpress"               TEXT,            -- source type: varchar
-    "lockminpress"               TEXT,            -- source type: varchar
-    "minvolpctnoncaprel"         TEXT,            -- source type: varchar
-    "minvolqtynoncaprel"         TEXT,            -- source type: varchar
-    "captype"                    TEXT,            -- source type: varchar
-    "captypename"                TEXT,            -- source type: varchar
-    "captypeloc"                 TEXT,            -- source type: varchar
-    "captypelocdesc"             TEXT,            -- source type: varchar
-    "kqtyloc"                    TEXT,            -- source type: varchar
-    "uniquekey"                  TEXT,            -- source type: varchar
-    "id"                         TEXT,            -- source type: varchar
-    "createddatetime"            TEXT,            -- source type: datetime
-    "posteddatetime"             TEXT,            -- source type: datetime
-    "kentbegdatetime"            TEXT,            -- source type: datetime
-    "kentenddatetime"            TEXT,            -- source type: datetime
-    "recloc"                     TEXT,            -- source type: varchar
-    "reclocname"                 TEXT,            -- source type: varchar
-    "reclocpurp"                 TEXT,            -- source type: varchar
-    "reclocpurpdesc"             TEXT,            -- source type: varchar
-    "recloczn"                   TEXT,            -- source type: varchar
-    "delloc"                     TEXT,            -- source type: varchar
-    "dellocname"                 TEXT,            -- source type: varchar
-    "dellocpurp"                 TEXT,            -- source type: varchar
-    "dellocpurpdesc"             TEXT,            -- source type: varchar
-    "delloczn"                   TEXT,            -- source type: varchar
-    "locqti"                     TEXT,            -- source type: varchar
-    "locqtidesc"                 TEXT,            -- source type: varchar
-    "rateid"                     TEXT,            -- source type: varchar
-    "rateiddesc"                 TEXT,            -- source type: varchar
-    "ratechgd"                   TEXT,            -- source type: varchar
-    "ratechgdref"                TEXT,            -- source type: varchar
-    "ratechgdrefdesc"            TEXT,            -- source type: varchar
-    "maxtrfrate"                 TEXT,            -- source type: varchar
-    "maxtrfrateref"              TEXT,            -- source type: varchar
-    "maxtrfraterefdesc"          TEXT,            -- source type: varchar
-    "mktbasedrateind"            TEXT,            -- source type: varchar
-    "surchgid"                   TEXT,            -- source type: varchar
-    "surchgiddesc"               TEXT,            -- source type: varchar
-    "surchgind"                  TEXT,            -- source type: varchar
-    "surchginddesc"              TEXT,            -- source type: varchar
-    "totsurchg"                  TEXT,            -- source type: varchar
-    "discbegdatetime"            TEXT,            -- source type: datetime
-    "discenddatetime"            TEXT,            -- source type: datetime
-    "rptlvl"                     TEXT,            -- source type: varchar
-    "rptlvldesc"                 TEXT,            -- source type: varchar
-    "tspduns"                    TEXT,            -- source type: int
-    "tspname"                    TEXT,            -- source type: varchar
-    "ngtdrateindrates"           TEXT,            -- source type: varchar
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gtran_rates_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gtran_rates_run" ON bronze."gtran_rates" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gtran_rates_recid" ON bronze."gtran_rates" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gawd" (
     bronze_row_id BIGSERIAL PRIMARY KEY,
@@ -410,6 +257,8 @@ CREATE TABLE IF NOT EXISTS bronze."gawd" (
     "bidderfullname"             TEXT,            -- source type: varchar
     "version_status"             TEXT,            -- source type: varchar
     "updateddatetime"            TEXT,            -- source type: datetime
+    "locations"                  TEXT,            -- source type: json
+    "rates"                      TEXT,            -- source type: json
     -- ---- pipeline metadata ----
     "raw_record_id"              VARCHAR(256),
     "hash_key"                   VARCHAR(64),
@@ -425,180 +274,6 @@ CREATE TABLE IF NOT EXISTS bronze."gawd" (
 );
 CREATE INDEX IF NOT EXISTS "ix_gawd_run" ON bronze."gawd" (pipeline_run_id);
 CREATE INDEX IF NOT EXISTS "ix_gawd_recid" ON bronze."gawd" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gawd_loc" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "gs_id"                      TEXT,            -- source type: int
-    "id"                         TEXT,            -- source type: varchar
-    "offernumber"                TEXT,            -- source type: varchar
-    "bidnumber"                  TEXT,            -- source type: varchar
-    "awardnumber"                TEXT,            -- source type: varchar
-    "transportationserviceproviderpropcode" TEXT,            -- source type: varchar
-    "ibrratefloor"               TEXT,            -- source type: varchar
-    "ibrnamevolume"              TEXT,            -- source type: varchar
-    "maximumvolumetriccommitmentquantity" TEXT,            -- source type: int
-    "seasonalstartdate"          TEXT,            -- source type: datetime
-    "seasonalenddate"            TEXT,            -- source type: datetime
-    "locationpurposecode"        TEXT,            -- source type: varchar
-    "stdlocproppurposecode"      TEXT,            -- source type: varchar
-    "locationpurposecodevalue"   TEXT,            -- source type: varchar
-    "locationname"               TEXT,            -- source type: varchar
-    "locationpropcode"           TEXT,            -- source type: varchar
-    "locationquantitytypeindicator" TEXT,            -- source type: varchar
-    "locationquantitytypeindicatorcodevalue" TEXT,            -- source type: varchar
-    "capacitytypelocationindicator" TEXT,            -- source type: varchar
-    "capacitytypelocationindicatorcodevalue" TEXT,            -- source type: varchar
-    "route"                      TEXT,            -- source type: varchar
-    "awardquantitylocation"      TEXT,            -- source type: varchar
-    "seasonaldateformat"         TEXT,            -- source type: varchar
-    "bidderduns"                 TEXT,            -- source type: int
-    "releaserduns"               TEXT,            -- source type: int
-    "createddate"                TEXT,            -- source type: datetime
-    "version_status"             TEXT,            -- source type: varchar
-    "updateddatetime"            TEXT,            -- source type: datetime
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gawd_loc_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gawd_loc_run" ON bronze."gawd_loc" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gawd_loc_recid" ON bronze."gawd_loc" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gawd_rates" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "gs_id"                      TEXT,            -- source type: int
-    "id"                         TEXT,            -- source type: varchar
-    "offernumber"                TEXT,            -- source type: varchar
-    "bidnumber"                  TEXT,            -- source type: varchar
-    "awardnumber"                TEXT,            -- source type: varchar
-    "bidderduns"                 TEXT,            -- source type: int
-    "releaserduns"               TEXT,            -- source type: int
-    "transportationserviceproviderpropcode" TEXT,            -- source type: varchar
-    "locationpurpose"            TEXT,            -- source type: varchar
-    "locationpurposecodevalue"   TEXT,            -- source type: varchar
-    "locationname"               TEXT,            -- source type: varchar
-    "locationpropcode"           TEXT,            -- source type: varchar
-    "identificationcodequalifier" TEXT,            -- source type: varchar
-    "reservationratebasis"       TEXT,            -- source type: varchar
-    "marketbasedrateindicator"   TEXT,            -- source type: varchar
-    "surchargeindicatorcodevalue" TEXT,            -- source type: varchar
-    "surchargeindicator"         TEXT,            -- source type: varchar
-    "chargeinformationreferencenumber" TEXT,            -- source type: varchar
-    "chargecode"                 TEXT,            -- source type: varchar
-    "chargerate"                 TEXT,            -- source type: varchar
-    "awardrate"                  TEXT,            -- source type: varchar
-    "awardrateidentificationcode" TEXT,            -- source type: varchar
-    "maximumtariffrate"          TEXT,            -- source type: varchar
-    "maximumtariffrateidentificationcode" TEXT,            -- source type: varchar
-    "awardpercentageofmaximumtariffrate" TEXT,            -- source type: varchar
-    "awardpercentageofmaximumtariffrateidentificationcode" TEXT,            -- source type: varchar
-    "minimumvolumetriccommitmentpercentage" TEXT,            -- source type: varchar
-    "ibrallowabledifferential"   TEXT,            -- source type: varchar
-    "ibrallowabledifferentialratefloor" TEXT,            -- source type: varchar
-    "ibrbidvaluepercent"         TEXT,            -- source type: varchar
-    "createddate"                TEXT,            -- source type: datetime
-    "version_status"             TEXT,            -- source type: varchar
-    "updateddatetime"            TEXT,            -- source type: datetime
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gawd_rates_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gawd_rates_run" ON bronze."gawd_rates" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gawd_rates_recid" ON bronze."gawd_rates" (raw_record_id);
-
-CREATE TABLE IF NOT EXISTS bronze."gtran_it_rates" (
-    bronze_row_id BIGSERIAL PRIMARY KEY,
-    "maxdq"                      TEXT,            -- source type: varchar
-    "mindq"                      TEXT,            -- source type: varchar
-    "seasnlst"                   TEXT,            -- source type: varchar
-    "seasnlend"                  TEXT,            -- source type: varchar
-    "interruptibleid"            TEXT,            -- source type: varchar
-    "uniqueid"                   TEXT,            -- source type: varchar
-    "pk"                         TEXT,            -- source type: varchar
-    "rateformtype"               TEXT,            -- source type: varchar
-    "rateformtypedesc"           TEXT,            -- source type: varchar
-    "resratebasis"               TEXT,            -- source type: varchar
-    "resratebasisdesc"           TEXT,            -- source type: varchar
-    "lockmaxpress"               TEXT,            -- source type: varchar
-    "lockminpress"               TEXT,            -- source type: varchar
-    "minvolpctnoncaprel"         TEXT,            -- source type: varchar
-    "minvolqtynoncaprel"         TEXT,            -- source type: varchar
-    "captype"                    TEXT,            -- source type: varchar
-    "captypename"                TEXT,            -- source type: varchar
-    "captypeloc"                 TEXT,            -- source type: varchar
-    "captypelocdesc"             TEXT,            -- source type: varchar
-    "itqtyloc"                   TEXT,            -- source type: varchar
-    "uniquekey"                  TEXT,            -- source type: varchar
-    "id"                         TEXT,            -- source type: varchar
-    "createddatetime"            TEXT,            -- source type: datetime
-    "posteddatetime"             TEXT,            -- source type: datetime
-    "kentbegdatetime"            TEXT,            -- source type: datetime
-    "kentenddatetime"            TEXT,            -- source type: datetime
-    "recloc"                     TEXT,            -- source type: varchar
-    "reclocname"                 TEXT,            -- source type: varchar
-    "reclocpurp"                 TEXT,            -- source type: varchar
-    "reclocpurpdesc"             TEXT,            -- source type: varchar
-    "recloczn"                   TEXT,            -- source type: varchar
-    "delloc"                     TEXT,            -- source type: varchar
-    "dellocname"                 TEXT,            -- source type: varchar
-    "dellocpurp"                 TEXT,            -- source type: varchar
-    "dellocpurpdesc"             TEXT,            -- source type: varchar
-    "delloczn"                   TEXT,            -- source type: varchar
-    "locqti"                     TEXT,            -- source type: varchar
-    "locqtidesc"                 TEXT,            -- source type: varchar
-    "rateid"                     TEXT,            -- source type: varchar
-    "rateiddesc"                 TEXT,            -- source type: varchar
-    "ratechgd"                   TEXT,            -- source type: varchar
-    "ratechgdref"                TEXT,            -- source type: varchar
-    "ratechgdrefdesc"            TEXT,            -- source type: varchar
-    "maxtrfrate"                 TEXT,            -- source type: varchar
-    "maxtrfrateref"              TEXT,            -- source type: varchar
-    "maxtrfraterefdesc"          TEXT,            -- source type: varchar
-    "mktbasedrateind"            TEXT,            -- source type: varchar
-    "surchgid"                   TEXT,            -- source type: varchar
-    "surchgiddesc"               TEXT,            -- source type: varchar
-    "surchgind"                  TEXT,            -- source type: varchar
-    "surchginddesc"              TEXT,            -- source type: varchar
-    "totsurchg"                  TEXT,            -- source type: varchar
-    "discbegdatetime"            TEXT,            -- source type: datetime
-    "discenddatetime"            TEXT,            -- source type: datetime
-    "rptlvl"                     TEXT,            -- source type: varchar
-    "rptlvldesc"                 TEXT,            -- source type: varchar
-    "tspduns"                    TEXT,            -- source type: int
-    "tspname"                    TEXT,            -- source type: varchar
-    "ngtdrateindrates"           TEXT,            -- source type: varchar
-    -- ---- pipeline metadata ----
-    "raw_record_id"              VARCHAR(256),
-    "hash_key"                   VARCHAR(64),
-    "pipeline_run_id"            VARCHAR(64),
-    "source_system"              VARCHAR(128),
-    "source_api"                 VARCHAR(256),
-    "source_file_name"           VARCHAR(512),
-    "ingestion_timestamp"        TIMESTAMPTZ,
-    "updated_ts"                 TIMESTAMPTZ,
-    "ingestion_status"           VARCHAR(32),
-    "raw_payload"                JSONB,
-    CONSTRAINT "uq_gtran_it_rates_hash" UNIQUE (hash_key)
-);
-CREATE INDEX IF NOT EXISTS "ix_gtran_it_rates_run" ON bronze."gtran_it_rates" (pipeline_run_id);
-CREATE INDEX IF NOT EXISTS "ix_gtran_it_rates_recid" ON bronze."gtran_it_rates" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."ingestion_log" (
     log_id BIGSERIAL PRIMARY KEY,

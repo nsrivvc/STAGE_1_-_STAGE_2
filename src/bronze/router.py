@@ -3,24 +3,21 @@ router.py
 =========
 Decides which Bronze table(s) each part of a payload belongs to.
 
-A single NatGasHub payload routinely fans out into several Bronze tables. A firm
-transportation posting, for example, contains a list of contracts, and each
-contract carries nested location and rate arrays:
+Each feed lands in exactly ONE Bronze raw table, one row per source record:
 
-    feedType = "gTRAN_FIRM"
-        contracts[]              -> bronze.gtran_firm        (one row per contract)
-            contract.locations[] -> bronze.gtran_loc         (one row per location)
-            contract.rates[]     -> bronze.gtran_rates       (one row per rate)
+    gTRAN_FIRM  contracts[] -> bronze.gtran_firm
+    gTRAN_IT    contracts[] -> bronze.gtran_it
+    gINDEX      records[]   -> bronze.gindex
+    gAWD        awards[]    -> bronze.gawd
 
-The interruptible feed ("gTRAN_IT") is structurally identical and targets the
-*_it tables. The Index-of-Customers feed ("gINDEX") is flat (one table).
+Nested arrays inside a record (locations, rates) are kept on the row as
+canonical JSON text columns — flattening/exploding them into per-location and
+per-rate rows is the Silver layer's job, not Bronze's.
 
 Header propagation
 ------------------
-TSP-level fields (TspName, TspDuns, ...) declared once at the payload header are
-merged into every contract; contract-level linkage fields (FirmId/InterruptibleId,
-TspDuns, TspName, PostedDateTime) are merged down into child location/rate rows
-when absent, so the Bronze rows remain self-describing for Silver to join.
+TSP-level fields (TspName, TspDuns, ...) declared once at the payload header
+are merged into every record, so each Bronze row is self-describing.
 
 Adding a new feed = adding one entry to FEED_REGISTRY. No new code paths.
 """
@@ -53,11 +50,10 @@ class FeedSpec:
     children: List[ChildSpec]
 
 
-# --- shared linkage fields propagated from a firm/IT contract to its children
-_FIRM_INHERIT = ["FirmId", "TspDuns", "TspName", "PostedDateTime", "Cycle"]
-_IT_INHERIT = ["InterruptibleId", "TspDuns", "TspName", "PostedDateTime", "Cycle"]
-
-
+# Bronze is ONE raw table per feed. Nested arrays (locations/rates) are NOT
+# fanned out here — they land as canonical JSON text columns on the parent row
+# (plus the full original record in raw_payload). Exploding them into
+# location/rate rows is the Silver layer's job.
 FEED_REGISTRY: Dict[str, FeedSpec] = {
     "gTRAN_FIRM": FeedSpec(
         feed_type="gTRAN_FIRM",
@@ -66,12 +62,7 @@ FEED_REGISTRY: Dict[str, FeedSpec] = {
         parent_id_field="Id",
         parent_required=["Id", "FirmId"],
         header_keys=["TspName", "TspDuns", "TspProp"],
-        children=[
-            ChildSpec("locations", "gtran_loc", "UniqueId",
-                      required=["Loc", "UniqueId"], inherit=_FIRM_INHERIT),
-            ChildSpec("rates", "gtran_rates", "UniqueId",
-                      required=["UniqueId"], inherit=_FIRM_INHERIT),
-        ],
+        children=[],
     ),
     "gTRAN_IT": FeedSpec(
         feed_type="gTRAN_IT",
@@ -80,12 +71,7 @@ FEED_REGISTRY: Dict[str, FeedSpec] = {
         parent_id_field="Id",
         parent_required=["Id", "InterruptibleId"],
         header_keys=["TspName", "TspDuns", "TspProp"],
-        children=[
-            ChildSpec("locations", "gtran_it_loc", "UniqueId",
-                      required=["Loc", "UniqueId"], inherit=_IT_INHERIT),
-            ChildSpec("rates", "gtran_it_rates", "UniqueId",
-                      required=["UniqueId"], inherit=_IT_INHERIT),
-        ],
+        children=[],
     ),
     "gINDEX": FeedSpec(
         feed_type="gINDEX",
@@ -96,11 +82,8 @@ FEED_REGISTRY: Dict[str, FeedSpec] = {
         header_keys=[],
         children=[],
     ),
-    # Capacity-release awards: shaped like the gTRAN feeds (one row per award
-    # with nested location/rate arrays). Child records already carry their own
-    # linkage keys (GS_ID, OfferNumber, BidNumber, AwardNumber), so nothing
-    # needs to be inherited from the parent. No TSP header at the payload
-    # level — each award carries its own TSP fields.
+    # Capacity-release awards. No TSP header at the payload level — each award
+    # carries its own TSP fields.
     "gAWD": FeedSpec(
         feed_type="gAWD",
         records_key="awards",
@@ -108,10 +91,7 @@ FEED_REGISTRY: Dict[str, FeedSpec] = {
         parent_id_field="Id",
         parent_required=["Id", "AwardNumber"],
         header_keys=[],
-        children=[
-            ChildSpec("locations", "gawd_loc", "Id", required=["Id"], inherit=[]),
-            ChildSpec("rates", "gawd_rates", "Id", required=["Id"], inherit=[]),
-        ],
+        children=[],
     ),
 }
 
