@@ -54,7 +54,7 @@ def health():
 
 @app.get("/api/firms")
 def get_firms():
-    return load_fixture("firms_test_2000_multi_pipeline_v2.json")
+    return load_fixture("firms_test.json")
 
 
 @app.get("/api/interruptibles")

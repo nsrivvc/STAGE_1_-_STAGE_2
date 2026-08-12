@@ -96,16 +96,22 @@ FEED_REGISTRY: Dict[str, FeedSpec] = {
         header_keys=[],
         children=[],
     ),
-    # Capacity-release awards: flat like gINDEX (one row per award, no child
-    # arrays), but with TSP header fields propagated like the gTRAN feeds.
+    # Capacity-release awards: shaped like the gTRAN feeds (one row per award
+    # with nested location/rate arrays). Child records already carry their own
+    # linkage keys (GS_ID, OfferNumber, BidNumber, AwardNumber), so nothing
+    # needs to be inherited from the parent. No TSP header at the payload
+    # level — each award carries its own TSP fields.
     "gAWD": FeedSpec(
         feed_type="gAWD",
         records_key="awards",
         parent_table="gawd",
         parent_id_field="Id",
-        parent_required=["Id", "AwardId"],
-        header_keys=["TspName", "TspDuns", "TspProp"],
-        children=[],
+        parent_required=["Id", "AwardNumber"],
+        header_keys=[],
+        children=[
+            ChildSpec("locations", "gawd_loc", "Id", required=["Id"], inherit=[]),
+            ChildSpec("rates", "gawd_rates", "Id", required=["Id"], inherit=[]),
+        ],
     ),
 }
 

@@ -326,34 +326,90 @@ CREATE INDEX IF NOT EXISTS "ix_gtran_rates_recid" ON bronze."gtran_rates" (raw_r
 
 CREATE TABLE IF NOT EXISTS bronze."gawd" (
     bronze_row_id BIGSERIAL PRIMARY KEY,
+    "gs_id"                      TEXT,            -- source type: int
     "id"                         TEXT,            -- source type: varchar
-    "tspname"                    TEXT,            -- source type: varchar
-    "tspduns"                    TEXT,            -- source type: int
-    "tspprop"                    TEXT,            -- source type: varchar
-    "posteddatetime"             TEXT,            -- source type: datetime
-    "awardid"                    TEXT,            -- source type: varchar
-    "cycle"                      TEXT,            -- source type: varchar
-    "relkholdername"             TEXT,            -- source type: varchar
-    "relkholder"                 TEXT,            -- source type: int
-    "relk"                       TEXT,            -- source type: varchar
-    "acqkholdername"             TEXT,            -- source type: varchar
-    "acqkholder"                 TEXT,            -- source type: int
-    "acqk"                       TEXT,            -- source type: varchar
-    "ratesch"                    TEXT,            -- source type: varchar
-    "captype"                    TEXT,            -- source type: varchar
-    "captypename"                TEXT,            -- source type: varchar
-    "awdqty"                     TEXT,            -- source type: int
-    "awdbegdatetime"             TEXT,            -- source type: datetime
-    "awdenddatetime"             TEXT,            -- source type: datetime
-    "reclocs"                    TEXT,            -- source type: varchar
-    "dellocs"                    TEXT,            -- source type: varchar
-    "ngtdrateind"                TEXT,            -- source type: varchar
-    "prearrngdeal"               TEXT,            -- source type: varchar
-    "ratechgd"                   TEXT,            -- source type: varchar
-    "maxtrfrate"                 TEXT,            -- source type: varchar
-    "ratebasis"                  TEXT,            -- source type: varchar
-    "termsnotes"                 TEXT,            -- source type: varchar
-    "createddatetime"            TEXT,            -- source type: datetime
+    "transportationserviceprovidername" TEXT,            -- source type: varchar
+    "transportationserviceproviderpropcode" TEXT,            -- source type: varchar
+    "status"                     TEXT,            -- source type: varchar
+    "statuscodevalue"            TEXT,            -- source type: varchar
+    "offernumber"                TEXT,            -- source type: varchar
+    "bidnumber"                  TEXT,            -- source type: varchar
+    "awardnumber"                TEXT,            -- source type: varchar
+    "awardquantitycontract"      TEXT,            -- source type: varchar
+    "ibrindexbasedcapacityreleaseindicator" TEXT,            -- source type: varchar
+    "ibrindexbasedcapacityreleaseindicatorcodevalue" TEXT,            -- source type: varchar
+    "recallreputindicator"       TEXT,            -- source type: varchar
+    "recallreputindicatorcodevalue" TEXT,            -- source type: varchar
+    "allowablereleaseindicator"  TEXT,            -- source type: varchar
+    "affiliatedindicator"        TEXT,            -- source type: varchar
+    "affiliatedindicatorcodevalue" TEXT,            -- source type: varchar
+    "righttoamendprimarypointsindicator" TEXT,            -- source type: varchar
+    "righttoamendprimarypointsindicatorcodevalue" TEXT,            -- source type: varchar
+    "rei_awardingaction"         TEXT,            -- source type: varchar
+    "rei_storageinventorycondition" TEXT,            -- source type: varchar
+    "capacityawarddatetime"      TEXT,            -- source type: datetime
+    "releasetermstartdate"       TEXT,            -- source type: datetime
+    "releasetermenddate"         TEXT,            -- source type: datetime
+    "postdatetime"               TEXT,            -- source type: datetime
+    "marketbasedrateindicator"   TEXT,            -- source type: varchar
+    "marketbasedrateindicatorcodevalue" TEXT,            -- source type: varchar
+    "prearrangeddealindicator"   TEXT,            -- source type: varchar
+    "prearrangeddealindicatorcodevalue" TEXT,            -- source type: varchar
+    "previouslyreleasedindicator" TEXT,            -- source type: varchar
+    "previouslyreleasedindicatorcodevalue" TEXT,            -- source type: varchar
+    "permanentreleaseindicator"  TEXT,            -- source type: varchar
+    "permanentreleaseindicatorcodevalue" TEXT,            -- source type: varchar
+    "replacementshipperroleindicator" TEXT,            -- source type: varchar
+    "replacementshipperroleindicatorcodevalue" TEXT,            -- source type: varchar
+    "storageinventoryconditionedreleaseindicator" TEXT,            -- source type: varchar
+    "storageinventoryconditionedreleaseindicatorcodevalue" TEXT,            -- source type: varchar
+    "overrunresponsibilityindicator" TEXT,            -- source type: varchar
+    "overrunresponsibilityindicatorcodevalue" TEXT,            -- source type: varchar
+    "businessdayindicator"       TEXT,            -- source type: varchar
+    "biddername"                 TEXT,            -- source type: varchar
+    "bidderduns"                 TEXT,            -- source type: int
+    "releasername"               TEXT,            -- source type: varchar
+    "releaserduns"               TEXT,            -- source type: int
+    "bidderphonenumber"          TEXT,            -- source type: varchar
+    "bidderemailaddress"         TEXT,            -- source type: varchar
+    "rateformtypecode"           TEXT,            -- source type: varchar
+    "rateformtypecodevalue"      TEXT,            -- source type: varchar
+    "reservationratebasis"       TEXT,            -- source type: varchar
+    "reservationratebasiscodevalue" TEXT,            -- source type: varchar
+    "rateschedule"               TEXT,            -- source type: varchar
+    "unitprice"                  TEXT,            -- source type: varchar
+    "multiplier"                 TEXT,            -- source type: varchar
+    "monetaryamount"             TEXT,            -- source type: varchar
+    "releasedesignationacceptablebiddingbasis" TEXT,            -- source type: varchar
+    "releasedesignationacceptablebiddingbasiscodevalue" TEXT,            -- source type: varchar
+    "surchargeindicator"         TEXT,            -- source type: varchar
+    "surchargeindicatorcodevalue" TEXT,            -- source type: varchar
+    "chargeindicator"            TEXT,            -- source type: varchar
+    "cycleindicator"             TEXT,            -- source type: varchar
+    "cycleindicatorcodevalue"    TEXT,            -- source type: varchar
+    "ibrformulaidentifier"       TEXT,            -- source type: varchar
+    "ibrformulaidentifiercodevalue" TEXT,            -- source type: varchar
+    "ibrindexmathematicaloperatorindicator" TEXT,            -- source type: varchar
+    "ibrindexmathematicaloperatorindicatorcodevalue" TEXT,            -- source type: varchar
+    "ibrindexreference1"         TEXT,            -- source type: varchar
+    "ibrindexreference2"         TEXT,            -- source type: varchar
+    "ibruniqueformulaspecialterms" TEXT,            -- source type: varchar
+    "ibrvariablemathematicaloperatorindicator" TEXT,            -- source type: varchar
+    "replacementshippercontractnumber" TEXT,            -- source type: varchar
+    "agencyqualifiercode"        TEXT,            -- source type: varchar
+    "recallreputtermrate"        TEXT,            -- source type: varchar
+    "righttoamendprimarypointstermsnote" TEXT,            -- source type: varchar
+    "specialtermsandmiscellaneousnotesandobligations" TEXT,            -- source type: varchar
+    "specialtermsandmiscellaneousnotesstorageinventoryconditions" TEXT,            -- source type: varchar
+    "specialtermsandmiscellaneousnotes" TEXT,            -- source type: varchar
+    "measurementbasis"           TEXT,            -- source type: varchar
+    "measurementbasiscodevalue"  TEXT,            -- source type: varchar
+    "createddate"                TEXT,            -- source type: datetime
+    "releasercontractnumber"     TEXT,            -- source type: varchar
+    "releasefullname"            TEXT,            -- source type: varchar
+    "bidderfullname"             TEXT,            -- source type: varchar
+    "version_status"             TEXT,            -- source type: varchar
+    "updateddatetime"            TEXT,            -- source type: datetime
     -- ---- pipeline metadata ----
     "raw_record_id"              VARCHAR(256),
     "hash_key"                   VARCHAR(64),
@@ -369,6 +425,103 @@ CREATE TABLE IF NOT EXISTS bronze."gawd" (
 );
 CREATE INDEX IF NOT EXISTS "ix_gawd_run" ON bronze."gawd" (pipeline_run_id);
 CREATE INDEX IF NOT EXISTS "ix_gawd_recid" ON bronze."gawd" (raw_record_id);
+
+CREATE TABLE IF NOT EXISTS bronze."gawd_loc" (
+    bronze_row_id BIGSERIAL PRIMARY KEY,
+    "gs_id"                      TEXT,            -- source type: int
+    "id"                         TEXT,            -- source type: varchar
+    "offernumber"                TEXT,            -- source type: varchar
+    "bidnumber"                  TEXT,            -- source type: varchar
+    "awardnumber"                TEXT,            -- source type: varchar
+    "transportationserviceproviderpropcode" TEXT,            -- source type: varchar
+    "ibrratefloor"               TEXT,            -- source type: varchar
+    "ibrnamevolume"              TEXT,            -- source type: varchar
+    "maximumvolumetriccommitmentquantity" TEXT,            -- source type: int
+    "seasonalstartdate"          TEXT,            -- source type: datetime
+    "seasonalenddate"            TEXT,            -- source type: datetime
+    "locationpurposecode"        TEXT,            -- source type: varchar
+    "stdlocproppurposecode"      TEXT,            -- source type: varchar
+    "locationpurposecodevalue"   TEXT,            -- source type: varchar
+    "locationname"               TEXT,            -- source type: varchar
+    "locationpropcode"           TEXT,            -- source type: varchar
+    "locationquantitytypeindicator" TEXT,            -- source type: varchar
+    "locationquantitytypeindicatorcodevalue" TEXT,            -- source type: varchar
+    "capacitytypelocationindicator" TEXT,            -- source type: varchar
+    "capacitytypelocationindicatorcodevalue" TEXT,            -- source type: varchar
+    "route"                      TEXT,            -- source type: varchar
+    "awardquantitylocation"      TEXT,            -- source type: varchar
+    "seasonaldateformat"         TEXT,            -- source type: varchar
+    "bidderduns"                 TEXT,            -- source type: int
+    "releaserduns"               TEXT,            -- source type: int
+    "createddate"                TEXT,            -- source type: datetime
+    "version_status"             TEXT,            -- source type: varchar
+    "updateddatetime"            TEXT,            -- source type: datetime
+    -- ---- pipeline metadata ----
+    "raw_record_id"              VARCHAR(256),
+    "hash_key"                   VARCHAR(64),
+    "pipeline_run_id"            VARCHAR(64),
+    "source_system"              VARCHAR(128),
+    "source_api"                 VARCHAR(256),
+    "source_file_name"           VARCHAR(512),
+    "ingestion_timestamp"        TIMESTAMPTZ,
+    "updated_ts"                 TIMESTAMPTZ,
+    "ingestion_status"           VARCHAR(32),
+    "raw_payload"                JSONB,
+    CONSTRAINT "uq_gawd_loc_hash" UNIQUE (hash_key)
+);
+CREATE INDEX IF NOT EXISTS "ix_gawd_loc_run" ON bronze."gawd_loc" (pipeline_run_id);
+CREATE INDEX IF NOT EXISTS "ix_gawd_loc_recid" ON bronze."gawd_loc" (raw_record_id);
+
+CREATE TABLE IF NOT EXISTS bronze."gawd_rates" (
+    bronze_row_id BIGSERIAL PRIMARY KEY,
+    "gs_id"                      TEXT,            -- source type: int
+    "id"                         TEXT,            -- source type: varchar
+    "offernumber"                TEXT,            -- source type: varchar
+    "bidnumber"                  TEXT,            -- source type: varchar
+    "awardnumber"                TEXT,            -- source type: varchar
+    "bidderduns"                 TEXT,            -- source type: int
+    "releaserduns"               TEXT,            -- source type: int
+    "transportationserviceproviderpropcode" TEXT,            -- source type: varchar
+    "locationpurpose"            TEXT,            -- source type: varchar
+    "locationpurposecodevalue"   TEXT,            -- source type: varchar
+    "locationname"               TEXT,            -- source type: varchar
+    "locationpropcode"           TEXT,            -- source type: varchar
+    "identificationcodequalifier" TEXT,            -- source type: varchar
+    "reservationratebasis"       TEXT,            -- source type: varchar
+    "marketbasedrateindicator"   TEXT,            -- source type: varchar
+    "surchargeindicatorcodevalue" TEXT,            -- source type: varchar
+    "surchargeindicator"         TEXT,            -- source type: varchar
+    "chargeinformationreferencenumber" TEXT,            -- source type: varchar
+    "chargecode"                 TEXT,            -- source type: varchar
+    "chargerate"                 TEXT,            -- source type: varchar
+    "awardrate"                  TEXT,            -- source type: varchar
+    "awardrateidentificationcode" TEXT,            -- source type: varchar
+    "maximumtariffrate"          TEXT,            -- source type: varchar
+    "maximumtariffrateidentificationcode" TEXT,            -- source type: varchar
+    "awardpercentageofmaximumtariffrate" TEXT,            -- source type: varchar
+    "awardpercentageofmaximumtariffrateidentificationcode" TEXT,            -- source type: varchar
+    "minimumvolumetriccommitmentpercentage" TEXT,            -- source type: varchar
+    "ibrallowabledifferential"   TEXT,            -- source type: varchar
+    "ibrallowabledifferentialratefloor" TEXT,            -- source type: varchar
+    "ibrbidvaluepercent"         TEXT,            -- source type: varchar
+    "createddate"                TEXT,            -- source type: datetime
+    "version_status"             TEXT,            -- source type: varchar
+    "updateddatetime"            TEXT,            -- source type: datetime
+    -- ---- pipeline metadata ----
+    "raw_record_id"              VARCHAR(256),
+    "hash_key"                   VARCHAR(64),
+    "pipeline_run_id"            VARCHAR(64),
+    "source_system"              VARCHAR(128),
+    "source_api"                 VARCHAR(256),
+    "source_file_name"           VARCHAR(512),
+    "ingestion_timestamp"        TIMESTAMPTZ,
+    "updated_ts"                 TIMESTAMPTZ,
+    "ingestion_status"           VARCHAR(32),
+    "raw_payload"                JSONB,
+    CONSTRAINT "uq_gawd_rates_hash" UNIQUE (hash_key)
+);
+CREATE INDEX IF NOT EXISTS "ix_gawd_rates_run" ON bronze."gawd_rates" (pipeline_run_id);
+CREATE INDEX IF NOT EXISTS "ix_gawd_rates_recid" ON bronze."gawd_rates" (raw_record_id);
 
 CREATE TABLE IF NOT EXISTS bronze."gtran_it_rates" (
     bronze_row_id BIGSERIAL PRIMARY KEY,
