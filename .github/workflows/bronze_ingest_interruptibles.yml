@@ -64,3 +64,13 @@ jobs:
           name: bronze-parquet-interruptibles-${{ github.run_id }}
           path: parquet_output/
           if-no-files-found: warn
+
+      # Only on success: a failed load must not kick off Silver over bad data.
+      - name: Trigger Silver interruptible pipeline
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.SILVER_REPO_TOKEN }}
+        run: |
+          gh api repos/nsrivvc/bronze_to_silver_conversion/dispatches \
+            -f event_type=bronze-interruptible-loaded \
+            -f 'client_payload[ingest_run_id]=${{ github.run_id }}'
